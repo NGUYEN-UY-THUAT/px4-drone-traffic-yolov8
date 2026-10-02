@@ -83,6 +83,11 @@ COPY worlds/default_docker.sdf /root/PX4-Autopilot/Tools/simulation/gz/worlds/de
 # Setup gimbal joints for camera control
 RUN python3 /root/PX4-ROS2-Gazebo-YOLOv8/setup_gimbal.py
 
+# Fine-tuned YOLOv8 weights (not stored in git)
+RUN mkdir -p /root/PX4-ROS2-Gazebo-YOLOv8/finetune/runs/yolov8m_sim/weights && \
+    curl -fL -o /root/PX4-ROS2-Gazebo-YOLOv8/finetune/runs/yolov8m_sim/weights/best.pt \
+    https://github.com/NGUYEN-UY-THUAT/px4-drone-traffic-yolov8/releases/download/v1.0/best.pt
+
 # Additional Configs
 RUN echo "source /root/ws_sensor_combined/install/setup.bash" >> /root/.bashrc && \
     echo "source /opt/ros/humble/setup.bash" >> /root/.bashrc && \

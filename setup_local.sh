@@ -51,12 +51,18 @@ if ! grep -q "GZ_SIM_RESOURCE_PATH=.*\.gz/models" "$HOME/.bashrc"; then
     echo "Added GZ_SIM_RESOURCE_PATH to ~/.bashrc (open a new terminal to use it)"
 fi
 
-# 5. Fine-tuned YOLO weights are not stored in git
+# 5. Fine-tuned YOLO weights are not stored in git; download them from the release
 WEIGHTS="$REPO_DIR/finetune/runs/yolov8m_sim/weights/best.pt"
+WEIGHTS_URL="https://github.com/NGUYEN-UY-THUAT/px4-drone-traffic-yolov8/releases/download/v1.0/best.pt"
 if [ ! -f "$WEIGHTS" ]; then
-    echo
-    echo "Warning: $WEIGHTS is missing; uav_camera_det.py needs it." >&2
-    echo "Download best.pt (see README) or train it with finetune/train.py." >&2
+    mkdir -p "$(dirname "$WEIGHTS")"
+    if curl -fL -o "$WEIGHTS" "$WEIGHTS_URL"; then
+        echo "Downloaded fine-tuned weights to $WEIGHTS"
+    else
+        rm -f "$WEIGHTS"
+        echo "Warning: could not download $WEIGHTS_URL; uav_camera_det.py needs it." >&2
+        echo "Download it manually or train it with finetune/train.py." >&2
+    fi
 fi
 
 echo

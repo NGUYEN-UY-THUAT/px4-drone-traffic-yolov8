@@ -1,19 +1,37 @@
-# PX4-ROS2-Gazebo-YOLOv8
-Aerial Object Detection using a Drone with PX4 Autopilot and ROS 2. PX4 SITL and Gazebo Garden used for Simulation. YOLOv8 used for Object Detection.
+# px4-drone-traffic-yolov8
+Drone-based traffic monitoring in simulation: a PX4 drone with a gimbal camera flies over two-way traffic in Gazebo, and a YOLOv8 model fine-tuned on simulator images detects cars, buses, trucks, motorbikes and riders. Built with PX4 Autopilot, ROS 2 and Gazebo.
+
+Based on [monemati/PX4-ROS2-Gazebo-YOLOv8](https://github.com/monemati/PX4-ROS2-Gazebo-YOLOv8).
 
 ## Features
 - Keyboard-controlled drone flight (WASD + arrow keys) via MAVSDK
 - 2-axis gimbal camera control (pitch and yaw) adjustable during flight
-- YOLOv8 real-time object detection with resizable display window
+- YOLOv8 real-time object detection with resizable display window, using a YOLOv8m fine-tuned on simulator images
 - Two-way traffic (cars, SUVs, pickups, a bus and motorbikes) on the raceway straight for traffic-monitoring demos
 - All services orchestrated via tmuxinator in a single tiled-pane window
 - Docker-based setup with GPU passthrough and X11 forwarding
 
 ## Demo
+Demo of the original project:
+
 https://github.com/monemati/PX4-ROS2-Gazebo-YOLOv8/assets/58460889/fab19f49-0be6-43ea-a4e4-8e9bc8d59af9
 
+## Fine-tuned Model
+The pretrained COCO YOLOv8m detects the simulated motorbikes poorly, so it was fine-tuned on images captured from the simulator (`finetune/`). Results on the test set (300 images):
+
+| Model | mAP50 | mAP50-95 | Motorcycle recall |
+|-------|-------|----------|-------------------|
+| `yolov8m.pt` (COCO) | 0.402 | 0.323 | 0.243 |
+| Fine-tuned `best.pt` | 0.971 | 0.826 | 0.963 |
+
+The weights are published in the [v1.0 release](https://github.com/NGUYEN-UY-THUAT/px4-drone-traffic-yolov8/releases/tag/v1.0) and downloaded automatically by `setup_local.sh` and the Dockerfile. To download them yourself:
+```commandline
+mkdir -p finetune/runs/yolov8m_sim/weights
+curl -L -o finetune/runs/yolov8m_sim/weights/best.pt https://github.com/NGUYEN-UY-THUAT/px4-drone-traffic-yolov8/releases/download/v1.0/best.pt
+```
+
 ## Docker
-- You can pull the image (already built) or use the provided Dockerfile.
+- Build the image with the provided Dockerfile. The prebuilt image on Docker Hub is from the original project and does not include the traffic simulation or the fine-tuned model.
 
 ### Prerequisites
 Allow Docker to access the X11 display:
@@ -21,15 +39,15 @@ Allow Docker to access the X11 display:
 xhost +local:docker
 ```
 
-### Pull The Image
+### Pull The Original Image
 ```commandline
-# Already built and uploaded in dockerhub; You can skip this step, if you want to build your own custom image.
+# Prebuilt image of the original project (without this repo's changes)
 docker pull monemati/px4_ros2_gz_yolov8_image
 ```
 
 ### Build Custom Image
 ```commandline
-git clone https://github.com/monemati/PX4-ROS2-Gazebo-YOLOv8.git
+git clone https://github.com/NGUYEN-UY-THUAT/px4-drone-traffic-yolov8.git PX4-ROS2-Gazebo-YOLOv8
 cd PX4-ROS2-Gazebo-YOLOv8
 docker build -t px4_ros2_gz_yolov8_image .
 ```
@@ -131,8 +149,10 @@ python -m venv ~/px4-venv
 source ~/px4-venv/bin/activate
 ```
 ### Clone repository
+Clone into `~/PX4-ROS2-Gazebo-YOLOv8`; the commands below use that path.
 ```commandline
-git clone https://github.com/monemati/PX4-ROS2-Gazebo-YOLOv8.git
+cd ~
+git clone https://github.com/NGUYEN-UY-THUAT/px4-drone-traffic-yolov8.git PX4-ROS2-Gazebo-YOLOv8
 ```
 ### Install PX4
 ```commandline
@@ -214,7 +234,7 @@ cd ~/PX4-ROS2-Gazebo-YOLOv8
 ./setup_local.sh
 ```
 The script copies `models/` to `~/.gz/models` and `worlds/default.sdf` to `~/PX4-Autopilot/Tools/simulation/gz/worlds/`, then adds the gimbal to the x500_depth model with `setup_gimbal.py` (the original model is backed up as `model.sdf.bak_nogimbal`). Run it again after changing `models/`, `worlds/` or `setup_gimbal.py`. If PX4 is not in `~/PX4-Autopilot`, use `PX4_DIR=/path/to/PX4-Autopilot ./setup_local.sh`.
-- `uav_camera_det.py` uses the fine-tuned weights `finetune/runs/yolov8m_sim/weights/best.pt`, which are not stored in git. Download them into that path, or train them with `python finetune/train.py`.
+- `uav_camera_det.py` uses the fine-tuned weights `finetune/runs/yolov8m_sim/weights/best.pt`, which are not stored in git. `setup_local.sh` downloads them from the release (see [Fine-tuned Model](#fine-tuned-model)), or you can train them with `python finetune/train.py`.
 
 ## Run
 ### Fly using Keyboard
@@ -274,6 +294,7 @@ ros2 run px4_ros_com offboard_control
 ```
 
 ## Acknowledgement
+- https://github.com/monemati/PX4-ROS2-Gazebo-YOLOv8 (original project)
 - https://github.com/PX4/PX4-Autopilot
 - https://github.com/ultralytics/ultralytics
 - https://www.ros.org/
