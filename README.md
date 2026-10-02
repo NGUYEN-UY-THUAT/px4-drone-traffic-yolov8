@@ -6,10 +6,7 @@ Phát triển từ [monemati/PX4-ROS2-Gazebo-YOLOv8](https://github.com/monemati
 ## Tính năng
 - Điều khiển drone bằng bàn phím (WASD + phím mũi tên) qua MAVSDK
 - Camera gắn gimbal 2 trục (pitch và yaw), chỉnh được trong khi bay
-- Nhận diện vật thể thời gian thực bằng YOLOv8m đã fine-tune trên ảnh mô phỏng, cửa sổ hiển thị thay đổi được kích thước
-- Giao thông hai chiều (ô tô, SUV, bán tải, xe buýt và xe máy) trên đoạn đường thẳng của trường đua
-- Tất cả dịch vụ chạy trong một cửa sổ tmux chia ô bằng tmuxinator
-- Chạy bằng Docker, hỗ trợ GPU và hiển thị qua X11
+- Nhận diện vật thể thời gian thực bằng YOLOv8m đã fine-tune trên ảnh mô phỏng
 
 ## Demo
 <!-- Video demo sẽ được thêm sau -->
