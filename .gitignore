@@ -1,1 +1,14 @@
 CLAUDE.md
+
+# Python
+__pycache__/
+*.pyc
+
+# YOLO weights (pretrained ones are downloaded automatically by ultralytics;
+# the fine-tuned best.pt is published separately, see README)
+*.pt
+
+# Fine-tuning dataset and training output (regenerate with finetune/collect.py and finetune/train.py)
+finetune/data/
+finetune/runs/
+finetune/train.log

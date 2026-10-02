@@ -1,0 +1,212 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+  <model name="motorbike_white">
+    <static>true</static>
+    <link name="link">
+      <collision name="collision">
+        <pose>0 0 0.5 0 0 0</pose>
+        <geometry><box><size>1.8 0.7 1.0</size></box></geometry>
+      </collision>
+      <visual name="rear_tire">
+        <pose>-0.6200 0.0000 0.2800 1.5708 0.0000 0.0000</pose>
+        <geometry><cylinder><radius>0.28</radius><length>0.1</length></cylinder></geometry>
+        <material><ambient>0.05 0.05 0.05 1</ambient><diffuse>0.05 0.05 0.05 1</diffuse><specular>0.2 0.2 0.2 1</specular></material>
+      </visual>
+      <visual name="rear_rim">
+        <pose>-0.6200 0.0000 0.2800 1.5708 0.0000 0.0000</pose>
+        <geometry><cylinder><radius>0.17</radius><length>0.11</length></cylinder></geometry>
+        <material><ambient>0.6 0.6 0.62 1</ambient><diffuse>0.6 0.6 0.62 1</diffuse><specular>0.2 0.2 0.2 1</specular></material>
+      </visual>
+      <visual name="front_tire">
+        <pose>0.6200 0.0000 0.2800 1.5708 0.0000 0.0000</pose>
+        <geometry><cylinder><radius>0.28</radius><length>0.1</length></cylinder></geometry>
+        <material><ambient>0.05 0.05 0.05 1</ambient><diffuse>0.05 0.05 0.05 1</diffuse><specular>0.2 0.2 0.2 1</specular></material>
+      </visual>
+      <visual name="front_rim">
+        <pose>0.6200 0.0000 0.2800 1.5708 0.0000 0.0000</pose>
+        <geometry><cylinder><radius>0.17</radius><length>0.11</length></cylinder></geometry>
+        <material><ambient>0.6 0.6 0.62 1</ambient><diffuse>0.6 0.6 0.62 1</diffuse><specular>0.2 0.2 0.2 1</specular></material>
+      </visual>
+      <visual name="fork_l">
+        <pose>0.5100 0.0700 0.6150 0.0000 0.3173 3.1416</pose>
+        <geometry><cylinder><radius>0.025</radius><length>0.7051950084905593</length></cylinder></geometry>
+        <material><ambient>0.6 0.6 0.62 1</ambient><diffuse>0.6 0.6 0.62 1</diffuse><specular>0.2 0.2 0.2 1</specular></material>
+      </visual>
+      <visual name="fork_r">
+        <pose>0.5100 -0.0700 0.6150 0.0000 0.3173 3.1416</pose>
+        <geometry><cylinder><radius>0.025</radius><length>0.7051950084905593</length></cylinder></geometry>
+        <material><ambient>0.6 0.6 0.62 1</ambient><diffuse>0.6 0.6 0.62 1</diffuse><specular>0.2 0.2 0.2 1</specular></material>
+      </visual>
+      <visual name="front_fender">
+        <pose>0.6200 0.0000 0.6000 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4 0.14 0.05</size></box></geometry>
+        <material><ambient>0.9 0.9 0.9 1</ambient><diffuse>0.9 0.9 0.9 1</diffuse><specular>0.2 0.2 0.2 1</specular></material>
+      </visual>
+      <visual name="front_cowl">
+        <pose>0.4000 0.0000 0.7800 0.0000 -0.3500 0.0000</pose>
+        <geometry><box><size>0.22 0.34 0.45</size></box></geometry>
+        <material><ambient>0.9 0.9 0.9 1</ambient><diffuse>0.9 0.9 0.9 1</diffuse><specular>0.2 0.2 0.2 1</specular></material>
+      </visual>
+      <visual name="headlight_housing">
+        <pose>0.4000 0.0000 1.0300 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.2 0.3 0.16</size></box></geometry>
+        <material><ambient>0.9 0.9 0.9 1</ambient><diffuse>0.9 0.9 0.9 1</diffuse><specular>0.2 0.2 0.2 1</specular></material>
+      </visual>
+      <visual name="headlight">
+        <pose>0.5100 0.0000 1.0300 0.0000 1.5708 0.0000</pose>
+        <geometry><cylinder><radius>0.06</radius><length>0.03</length></cylinder></geometry>
+        <material><ambient>1.0 1.0 0.85 1</ambient><diffuse>1.0 1.0 0.85 1</diffuse><specular>0.2 0.2 0.2 1</specular></material>
+      </visual>
+      <visual name="handlebar">
+        <pose>0.3400 0.0000 1.0600 1.5708 0.0000 0.0000</pose>
+        <geometry><cylinder><radius>0.02</radius><length>0.72</length></cylinder></geometry>
+        <material><ambient>0.6 0.6 0.62 1</ambient><diffuse>0.6 0.6 0.62 1</diffuse><specular>0.2 0.2 0.2 1</specular></material>
+      </visual>
+      <visual name="grip_l">
+        <pose>0.3400 0.3300 1.0600 1.5708 0.0000 0.0000</pose>
+        <geometry><cylinder><radius>0.03</radius><length>0.12</length></cylinder></geometry>
+        <material><ambient>0.05 0.05 0.05 1</ambient><diffuse>0.05 0.05 0.05 1</diffuse><specular>0.2 0.2 0.2 1</specular></material>
+      </visual>
+      <visual name="grip_r">
+        <pose>0.3400 -0.3300 1.0600 1.5708 0.0000 0.0000</pose>
+        <geometry><cylinder><radius>0.03</radius><length>0.12</length></cylinder></geometry>
+        <material><ambient>0.05 0.05 0.05 1</ambient><diffuse>0.05 0.05 0.05 1</diffuse><specular>0.2 0.2 0.2 1</specular></material>
+      </visual>
+      <visual name="mirror_stem_l">
+        <pose>0.3200 0.2730 1.1700 0.0000 0.2135 2.5652</pose>
+        <geometry><cylinder><radius>0.01</radius><length>0.22511330480449174</length></cylinder></geometry>
+        <material><ambient>0.6 0.6 0.62 1</ambient><diffuse>0.6 0.6 0.62 1</diffuse><specular>0.2 0.2 0.2 1</specular></material>
+      </visual>
+      <visual name="mirror_l">
+        <pose>0.3000 0.2860 1.3000 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.02 0.1 0.07</size></box></geometry>
+        <material><ambient>0.05 0.05 0.05 1</ambient><diffuse>0.05 0.05 0.05 1</diffuse><specular>0.2 0.2 0.2 1</specular></material>
+      </visual>
+      <visual name="mirror_stem_r">
+        <pose>0.3200 -0.2730 1.1700 0.0000 0.2135 -2.5652</pose>
+        <geometry><cylinder><radius>0.01</radius><length>0.22511330480449174</length></cylinder></geometry>
+        <material><ambient>0.6 0.6 0.62 1</ambient><diffuse>0.6 0.6 0.62 1</diffuse><specular>0.2 0.2 0.2 1</specular></material>
+      </visual>
+      <visual name="mirror_r">
+        <pose>0.3000 -0.2860 1.3000 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.02 0.1 0.07</size></box></geometry>
+        <material><ambient>0.05 0.05 0.05 1</ambient><diffuse>0.05 0.05 0.05 1</diffuse><specular>0.2 0.2 0.2 1</specular></material>
+      </visual>
+      <visual name="floorboard">
+        <pose>0.0500 0.0000 0.4200 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.55 0.3 0.06</size></box></geometry>
+        <material><ambient>0.9 0.9 0.9 1</ambient><diffuse>0.9 0.9 0.9 1</diffuse><specular>0.2 0.2 0.2 1</specular></material>
+      </visual>
+      <visual name="frame_tube">
+        <pose>0.2000 0.0000 0.6200 0.0000 0.6000 0.0000</pose>
+        <geometry><box><size>0.35 0.14 0.12</size></box></geometry>
+        <material><ambient>0.9 0.9 0.9 1</ambient><diffuse>0.9 0.9 0.9 1</diffuse><specular>0.2 0.2 0.2 1</specular></material>
+      </visual>
+      <visual name="engine">
+        <pose>-0.2500 0.0000 0.3200 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.45 0.26 0.28</size></box></geometry>
+        <material><ambient>0.6 0.6 0.62 1</ambient><diffuse>0.6 0.6 0.62 1</diffuse><specular>0.2 0.2 0.2 1</specular></material>
+      </visual>
+      <visual name="rear_body">
+        <pose>-0.3800 0.0000 0.6600 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.8 0.34 0.3</size></box></geometry>
+        <material><ambient>0.9 0.9 0.9 1</ambient><diffuse>0.9 0.9 0.9 1</diffuse><specular>0.2 0.2 0.2 1</specular></material>
+      </visual>
+      <visual name="seat">
+        <pose>-0.3500 0.0000 0.8550 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.75 0.3 0.09</size></box></geometry>
+        <material><ambient>0.12 0.1 0.08 1</ambient><diffuse>0.12 0.1 0.08 1</diffuse><specular>0.2 0.2 0.2 1</specular></material>
+      </visual>
+      <visual name="rear_fender">
+        <pose>-0.7800 0.0000 0.6200 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.3 0.16 0.05</size></box></geometry>
+        <material><ambient>0.9 0.9 0.9 1</ambient><diffuse>0.9 0.9 0.9 1</diffuse><specular>0.2 0.2 0.2 1</specular></material>
+      </visual>
+      <visual name="taillight">
+        <pose>-0.7900 0.0000 0.7200 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.04 0.16 0.06</size></box></geometry>
+        <material><ambient>0.9 0.05 0.05 1</ambient><diffuse>0.9 0.05 0.05 1</diffuse><specular>0.2 0.2 0.2 1</specular></material>
+      </visual>
+      <visual name="exhaust">
+        <pose>-0.4500 -0.1800 0.3400 0.0000 1.4010 3.1416</pose>
+        <geometry><cylinder><radius>0.045</radius><length>0.7102112361825882</length></cylinder></geometry>
+        <material><ambient>0.6 0.6 0.62 1</ambient><diffuse>0.6 0.6 0.62 1</diffuse><specular>0.2 0.2 0.2 1</specular></material>
+      </visual>
+      <visual name="pelvis">
+        <pose>-0.3200 0.0000 0.9500 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.25 0.34 0.14</size></box></geometry>
+        <material><ambient>0.15 0.15 0.2 1</ambient><diffuse>0.15 0.15 0.2 1</diffuse><specular>0.2 0.2 0.2 1</specular></material>
+      </visual>
+      <visual name="torso">
+        <pose>-0.2400 0.0000 1.2400 0.0000 0.2500 0.0000</pose>
+        <geometry><box><size>0.22 0.4 0.52</size></box></geometry>
+        <material><ambient>0.2 0.5 0.2 1</ambient><diffuse>0.2 0.5 0.2 1</diffuse><specular>0.2 0.2 0.2 1</specular></material>
+      </visual>
+      <visual name="neck">
+        <pose>-0.1600 0.0000 1.5200 0.0000 0.0000 0.0000</pose>
+        <geometry><sphere><radius>0.06</radius></sphere></geometry>
+        <material><ambient>0.85 0.65 0.5 1</ambient><diffuse>0.85 0.65 0.5 1</diffuse><specular>0.2 0.2 0.2 1</specular></material>
+      </visual>
+      <visual name="head">
+        <pose>-0.1400 0.0000 1.6400 0.0000 0.0000 0.0000</pose>
+        <geometry><sphere><radius>0.12</radius></sphere></geometry>
+        <material><ambient>0.85 0.65 0.5 1</ambient><diffuse>0.85 0.65 0.5 1</diffuse><specular>0.2 0.2 0.2 1</specular></material>
+      </visual>
+      <visual name="helmet">
+        <pose>-0.1500 0.0000 1.6800 0.0000 0.0000 0.0000</pose>
+        <geometry><sphere><radius>0.135</radius></sphere></geometry>
+        <material><ambient>0.2 0.2 0.2 1</ambient><diffuse>0.2 0.2 0.2 1</diffuse><specular>0.2 0.2 0.2 1</specular></material>
+      </visual>
+      <visual name="upper_arm_l">
+        <pose>-0.0500 0.2300 1.3200 0.0000 2.3299 0.3218</pose>
+        <geometry><cylinder><radius>0.05</radius><length>0.3487119154832539</length></cylinder></geometry>
+        <material><ambient>0.2 0.5 0.2 1</ambient><diffuse>0.2 0.5 0.2 1</diffuse><specular>0.2 0.2 0.2 1</specular></material>
+      </visual>
+      <visual name="forearm_l">
+        <pose>0.2000 0.3000 1.1350 0.0000 2.0241 0.2268</pose>
+        <geometry><cylinder><radius>0.04</radius><length>0.2968164415931166</length></cylinder></geometry>
+        <material><ambient>0.85 0.65 0.5 1</ambient><diffuse>0.85 0.65 0.5 1</diffuse><specular>0.2 0.2 0.2 1</specular></material>
+      </visual>
+      <visual name="thigh_l">
+        <pose>-0.1250 0.1500 0.9500 0.0000 1.5708 0.2247</pose>
+        <geometry><cylinder><radius>0.07</radius><length>0.3590264614203248</length></cylinder></geometry>
+        <material><ambient>0.15 0.15 0.2 1</ambient><diffuse>0.15 0.15 0.2 1</diffuse><specular>0.2 0.2 0.2 1</specular></material>
+      </visual>
+      <visual name="shin_l">
+        <pose>0.0750 0.1550 0.7250 0.0000 2.9527 -0.9505</pose>
+        <geometry><cylinder><radius>0.055</radius><length>0.4581484475582122</length></cylinder></geometry>
+        <material><ambient>0.15 0.15 0.2 1</ambient><diffuse>0.15 0.15 0.2 1</diffuse><specular>0.2 0.2 0.2 1</specular></material>
+      </visual>
+      <visual name="shoe_l">
+        <pose>0.1500 0.1200 0.4800 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.22 0.1 0.07</size></box></geometry>
+        <material><ambient>0.05 0.05 0.05 1</ambient><diffuse>0.05 0.05 0.05 1</diffuse><specular>0.2 0.2 0.2 1</specular></material>
+      </visual>
+      <visual name="upper_arm_r">
+        <pose>-0.0500 -0.2300 1.3200 0.0000 2.3299 -0.3218</pose>
+        <geometry><cylinder><radius>0.05</radius><length>0.3487119154832539</length></cylinder></geometry>
+        <material><ambient>0.2 0.5 0.2 1</ambient><diffuse>0.2 0.5 0.2 1</diffuse><specular>0.2 0.2 0.2 1</specular></material>
+      </visual>
+      <visual name="forearm_r">
+        <pose>0.2000 -0.3000 1.1350 0.0000 2.0241 -0.2268</pose>
+        <geometry><cylinder><radius>0.04</radius><length>0.2968164415931166</length></cylinder></geometry>
+        <material><ambient>0.85 0.65 0.5 1</ambient><diffuse>0.85 0.65 0.5 1</diffuse><specular>0.2 0.2 0.2 1</specular></material>
+      </visual>
+      <visual name="thigh_r">
+        <pose>-0.1250 -0.1500 0.9500 0.0000 1.5708 -0.2247</pose>
+        <geometry><cylinder><radius>0.07</radius><length>0.3590264614203248</length></cylinder></geometry>
+        <material><ambient>0.15 0.15 0.2 1</ambient><diffuse>0.15 0.15 0.2 1</diffuse><specular>0.2 0.2 0.2 1</specular></material>
+      </visual>
+      <visual name="shin_r">
+        <pose>0.0750 -0.1550 0.7250 0.0000 2.9527 0.9505</pose>
+        <geometry><cylinder><radius>0.055</radius><length>0.4581484475582122</length></cylinder></geometry>
+        <material><ambient>0.15 0.15 0.2 1</ambient><diffuse>0.15 0.15 0.2 1</diffuse><specular>0.2 0.2 0.2 1</specular></material>
+      </visual>
+      <visual name="shoe_r">
+        <pose>0.1500 -0.1200 0.4800 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.22 0.1 0.07</size></box></geometry>
+        <material><ambient>0.05 0.05 0.05 1</ambient><diffuse>0.05 0.05 0.05 1</diffuse><specular>0.2 0.2 0.2 1</specular></material>
+      </visual>
+    </link>
+  </model>
+</sdf>

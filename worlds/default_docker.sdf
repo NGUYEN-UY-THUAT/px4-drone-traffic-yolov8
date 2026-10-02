@@ -242,24 +242,97 @@
     <include>
       <uri>model://sonoma_raceway</uri>
     </include>
+    <!-- Traffic vehicles: parked in the pit lane, driven by traffic.py -->
     <include>
-      <pose>285.24 -146.97 2.57 0.02 0 -0.65</pose>
+      <pose>304.50 -173.48 1.95 0 0 -0.67</pose>
       <uri>model://hatchback_blue</uri>
       <name>hatchback_blue_1</name>
     </include>
     <include>
-      <pose>273.43 -137.65 2.86 0.02 0 -0.65</pose>
+      <pose>312.34 -179.69 1.75 0 0 -0.67</pose>
+      <uri>model://suv</uri>
+      <name>suv_1</name>
+    </include>
+    <include>
+      <pose>320.17 -185.90 1.55 0 0 -0.67</pose>
       <uri>model://pickup</uri>
       <name>pickup_1</name>
     </include>
     <include>
-      <pose>295.96 -146.5 2.48 -0.019 -0.008 2.46</pose>
+      <pose>328.01 -192.12 1.36 0 0 -0.67</pose>
+      <uri>model://bus</uri>
+      <name>bus_1</name>
+    </include>
+    <include>
+      <pose>335.84 -198.33 1.17 0 0 -0.67</pose>
+      <uri>model://hatchback_red</uri>
+      <name>hatchback_red_1</name>
+    </include>
+    <include>
+      <pose>343.68 -204.55 0.97 0 0 -0.67</pose>
+      <uri>model://suv</uri>
+      <name>suv_2</name>
+    </include>
+    <include>
+      <pose>351.51 -210.76 0.78 0 0 -0.67</pose>
       <uri>model://pickup</uri>
       <name>pickup_2</name>
     </include>
     <include>
-      <pose>280.64 -137.32 2.77 -0.019 -0.008 2.46</pose>
+      <pose>359.35 -216.97 0.60 0 0 -0.67</pose>
+      <uri>model://hatchback_red</uri>
+      <name>hatchback_red_2</name>
+    </include>
+    <include>
+      <pose>301.40 -177.39 1.95 0 0 -0.67</pose>
+      <uri>model://motorbike_red</uri>
+      <name>motorbike_red_1</name>
+    </include>
+    <include>
+      <pose>309.23 -183.61 1.75 0 0 -0.67</pose>
+      <uri>model://motorbike_blue</uri>
+      <name>motorbike_blue_1</name>
+    </include>
+    <include>
+      <pose>317.07 -189.82 1.55 0 0 -0.67</pose>
+      <uri>model://motorbike_black</uri>
+      <name>motorbike_black_1</name>
+    </include>
+    <include>
+      <pose>324.90 -196.04 1.36 0 0 -0.67</pose>
+      <uri>model://motorbike_white</uri>
+      <name>motorbike_white_1</name>
+    </include>
+    <include>
+      <pose>332.74 -202.25 1.17 0 0 -0.67</pose>
+      <uri>model://motorbike_red</uri>
+      <name>motorbike_red_2</name>
+    </include>
+    <include>
+      <pose>340.57 -208.46 0.97 0 0 -0.67</pose>
+      <uri>model://motorbike_blue</uri>
+      <name>motorbike_blue_2</name>
+    </include>
+    <include>
+      <pose>348.41 -214.68 0.78 0 0 -0.67</pose>
+      <uri>model://motorbike_black</uri>
+      <name>motorbike_black_2</name>
+    </include>
+    <include>
+      <pose>356.24 -220.89 0.60 0 0 -0.67</pose>
+      <uri>model://motorbike_white</uri>
+      <name>motorbike_white_2</name>
+    </include>
+    <!-- Pedestrians standing behind the pit wall -->
+    <include>
+      <pose>265.63 -138.81 2.98 0 0 -0.17</pose>
       <uri>model://casual_female</uri>
+      <name>casual_female_1</name>
+    </include>
+    <include>
+      <pose>279.11 -150.78 2.62 0 0 1.03</pose>
+      <uri>model://casual_female</uri>
+      <name>casual_female_2</name>
     </include>
   </world>
 </sdf>

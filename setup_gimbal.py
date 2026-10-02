@@ -17,6 +17,10 @@ MOUNT_Z = 0.21
 # Initial pitch angle (radians) — 45 degrees downward
 INITIAL_PITCH = 0.7854
 
+# Gimbal joints are driven by velocity commands: rate = P_GAIN * error, capped at MAX_RATE (rad/s)
+GIMBAL_P_GAIN = 4.0
+GIMBAL_MAX_RATE = 1.5
+
 
 def main():
     tree = ET.parse(MODEL_PATH)
@@ -65,7 +69,7 @@ def main():
     ET.SubElement(yaw_limit, "upper").text = "1.57"
     ET.SubElement(yaw_limit, "effort").text = "0.3"
     yaw_dynamics = ET.SubElement(yaw_axis, "dynamics")
-    ET.SubElement(yaw_dynamics, "damping").text = "3.0"
+    ET.SubElement(yaw_dynamics, "damping").text = "0.1"
 
     # --- Add pitch joint: gimbal_link -> camera_link ---
     pitch_joint = ET.SubElement(model, "joint", name="gimbal_pitch_joint", type="revolute")
@@ -74,36 +78,38 @@ def main():
     pitch_axis = ET.SubElement(pitch_joint, "axis")
     ET.SubElement(pitch_axis, "xyz").text = "0 1 0"
     pitch_limit = ET.SubElement(pitch_axis, "limit")
-    ET.SubElement(pitch_limit, "lower").text = "-1.57"
-    ET.SubElement(pitch_limit, "upper").text = "0.5"
+    ET.SubElement(pitch_limit, "lower").text = "-0.5"
+    ET.SubElement(pitch_limit, "upper").text = "1.57"
     ET.SubElement(pitch_limit, "effort").text = "0.3"
     pitch_dynamics = ET.SubElement(pitch_axis, "dynamics")
-    ET.SubElement(pitch_dynamics, "damping").text = "3.0"
+    ET.SubElement(pitch_dynamics, "damping").text = "0.1"
 
-    # --- Add JointPositionController for yaw (very low gains to avoid reaction torques) ---
+    # --- Add JointPositionController for yaw (velocity commands: no torque tuning, no reaction torques on the drone) ---
     yaw_ctrl = ET.SubElement(model, "plugin",
                              filename="gz-sim-joint-position-controller-system",
                              name="gz::sim::systems::JointPositionController")
     ET.SubElement(yaw_ctrl, "joint_name").text = "gimbal_yaw_joint"
     ET.SubElement(yaw_ctrl, "topic").text = "/gimbal/cmd_yaw"
-    ET.SubElement(yaw_ctrl, "p_gain").text = "1.0"
+    ET.SubElement(yaw_ctrl, "use_velocity_commands").text = "true"
+    ET.SubElement(yaw_ctrl, "p_gain").text = str(GIMBAL_P_GAIN)
     ET.SubElement(yaw_ctrl, "i_gain").text = "0"
-    ET.SubElement(yaw_ctrl, "d_gain").text = "0.1"
-    ET.SubElement(yaw_ctrl, "cmd_max").text = "0.3"
-    ET.SubElement(yaw_ctrl, "cmd_min").text = "-0.3"
+    ET.SubElement(yaw_ctrl, "d_gain").text = "0"
+    ET.SubElement(yaw_ctrl, "cmd_max").text = str(GIMBAL_MAX_RATE)
+    ET.SubElement(yaw_ctrl, "cmd_min").text = str(-GIMBAL_MAX_RATE)
     ET.SubElement(yaw_ctrl, "initial_position").text = "0"
 
-    # --- Add JointPositionController for pitch (very low gains to avoid reaction torques) ---
+    # --- Add JointPositionController for pitch (velocity commands: no torque tuning, no reaction torques on the drone) ---
     pitch_ctrl = ET.SubElement(model, "plugin",
                                filename="gz-sim-joint-position-controller-system",
                                name="gz::sim::systems::JointPositionController")
     ET.SubElement(pitch_ctrl, "joint_name").text = "gimbal_pitch_joint"
     ET.SubElement(pitch_ctrl, "topic").text = "/gimbal/cmd_pitch"
-    ET.SubElement(pitch_ctrl, "p_gain").text = "1.0"
+    ET.SubElement(pitch_ctrl, "use_velocity_commands").text = "true"
+    ET.SubElement(pitch_ctrl, "p_gain").text = str(GIMBAL_P_GAIN)
     ET.SubElement(pitch_ctrl, "i_gain").text = "0"
-    ET.SubElement(pitch_ctrl, "d_gain").text = "0.1"
-    ET.SubElement(pitch_ctrl, "cmd_max").text = "0.3"
-    ET.SubElement(pitch_ctrl, "cmd_min").text = "-0.3"
+    ET.SubElement(pitch_ctrl, "d_gain").text = "0"
+    ET.SubElement(pitch_ctrl, "cmd_max").text = str(GIMBAL_MAX_RATE)
+    ET.SubElement(pitch_ctrl, "cmd_min").text = str(-GIMBAL_MAX_RATE)
     ET.SubElement(pitch_ctrl, "initial_position").text = str(INITIAL_PITCH)
 
     # --- Write modified SDF ---

@@ -8,12 +8,12 @@
 import rclpy # Python library for ROS 2
 from rclpy.node import Node # Handles the creation of nodes
 from sensor_msgs.msg import Image # Image is the message type
-from cv_bridge import CvBridge # Package to convert between ROS and OpenCV Images
+import numpy as np
 import cv2 # OpenCV library
 from ultralytics import YOLO # YOLO library
 
 # Load the YOLOv8 model
-model = YOLO('yolov8m.pt')
+model = YOLO('finetune/runs/yolov8m_sim/weights/best.pt')
 
 
 class ImageSubscriber(Node):
@@ -36,9 +36,6 @@ class ImageSubscriber(Node):
       10)
     self.subscription # prevent unused variable warning
       
-    # Used to convert between ROS and OpenCV images
-    self.br = CvBridge()
-
     # Create a resizable window
     cv2.namedWindow('Detected Frame', cv2.WINDOW_NORMAL)
    
@@ -50,10 +47,15 @@ class ImageSubscriber(Node):
     self.get_logger().info('Receiving video frame')
  
     # Convert ROS Image message to OpenCV image
-    current_frame = self.br.imgmsg_to_cv2(data, desired_encoding="bgr8")
+    # (done with numpy instead of cv_bridge, which breaks under numpy 2.x)
+    current_frame = np.frombuffer(data.data, dtype=np.uint8).reshape(data.height, data.step)
+    current_frame = current_frame[:, :data.width * 3].reshape(data.height, data.width, 3)
+    if data.encoding == 'rgb8':
+      current_frame = cv2.cvtColor(current_frame, cv2.COLOR_RGB2BGR)
     image = current_frame
     # Object Detection
-    results = model.predict(image, classes=[0, 2])
+    # COCO: 0 person, 2 car, 3 motorcycle, 5 bus, 7 truck
+    results = model.predict(image, classes=[0, 2, 3, 5, 7])
     img = results[0].plot()
     # Show Results
     cv2.imshow('Detected Frame', img)    

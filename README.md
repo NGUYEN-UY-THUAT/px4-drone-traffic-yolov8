@@ -5,7 +5,7 @@ Aerial Object Detection using a Drone with PX4 Autopilot and ROS 2. PX4 SITL and
 - Keyboard-controlled drone flight (WASD + arrow keys) via MAVSDK
 - 2-axis gimbal camera control (pitch and yaw) adjustable during flight
 - YOLOv8 real-time object detection with resizable display window
-- Moving car target in the simulation for tracking demonstrations
+- Two-way traffic (cars, SUVs, pickups, a bus and motorbikes) on the raceway straight for traffic-monitoring demos
 - All services orchestrated via tmuxinator in a single tiled-pane window
 - Docker-based setup with GPU passthrough and X11 forwarding
 
@@ -62,7 +62,7 @@ The container starts a single tmux window with 6 tiled panes:
 | 2 | PX4 SITL (x500_depth drone) |
 | 3 | ROS-Gazebo camera bridge |
 | 4 | YOLOv8 detection display |
-| 5 | Moving car (hatchback driving in circles) |
+| 5 | Traffic simulation (`traffic.py`) |
 | 6 | Keyboard drone controller |
 
 Switch between panes with `Ctrl+b` then arrow keys.
@@ -76,6 +76,9 @@ All keyboard input is handled directly in the terminal (no separate window neede
 |-----|--------|
 | `r` | Arm the drone |
 | `l` | Land |
+| `h` | Hold mode: lock position and altitude, ignore the keyboard. Any movement key switches back to position mode |
+| `p` | Position mode (default after arming): release all keys to hold position and altitude |
+| `o` | Altitude mode: release all keys to hold altitude; the drone may drift horizontally |
 | `w` / `s` | Throttle up / down |
 | `a` / `d` | Yaw left / right |
 | Arrow keys | Roll / Pitch |
@@ -88,7 +91,7 @@ All keyboard input is handled directly in the terminal (no separate window neede
 | `j` / `k` | Gimbal pitch down / up |
 | `n` / `m` | Gimbal yaw left / right |
 
-The camera starts at 45 degrees downward. Pitch range: -90 to +30 degrees. Yaw range: -90 to +90 degrees.
+The camera starts at 45 degrees downward. It can tilt from 30 degrees up to straight down (90 degrees), and turn up to 90 degrees left or right.
 
 ## Gimbal Camera System
 
@@ -97,13 +100,26 @@ The drone's camera is mounted on a 2-axis gimbal with pitch and yaw control. Dur
 - **gimbal_yaw_joint**: Revolute joint around the Z axis (base_link to gimbal_link)
 - **gimbal_pitch_joint**: Revolute joint around the Y axis (gimbal_link to camera_link)
 
-Each joint is controlled by a `JointPositionController` plugin responding to Gazebo transport topics:
+Each joint is controlled by a `JointPositionController` plugin with velocity commands (up to 1.5 rad/s, no torque tuning and no reaction torques on the drone), responding to Gazebo transport topics:
 - `/gimbal/cmd_pitch` — pitch angle command
 - `/gimbal/cmd_yaw` — yaw angle command
 
-## Moving Car
+## Traffic Simulation
 
-`move_car.py` drives the `hatchback_blue_1` model in a circle within the simulation using `gz service /world/default/set_pose`. This provides a moving target for the YOLOv8 detection system to track.
+`traffic.py` drives 16 vehicles along the main straight of the Sonoma raceway, next to the drone's spawn point:
+
+| Lane | Direction | Vehicles |
+|------|-----------|----------|
+| Motorbike lane | south-east | 4 motorbikes |
+| Car lane | south-east | hatchback, SUV, pickup, bus |
+| Car lane | north-west | 2 hatchbacks, SUV, pickup |
+| Motorbike lane | north-west | 4 motorbikes |
+
+Each vehicle keeps a gap to the one ahead in its lane, and when it reaches the end of the road it re-enters at the start with a slightly different speed. All poses are sent in a single `/world/default/set_pose_vector` request per tick. The script uses the gz-transport Python bindings when they are importable (e.g. system `python3` with Gazebo Harmonic), and falls back to the slower `gz service` CLI otherwise.
+
+The vehicles are parked in the pit lane in `worlds/default.sdf` until `traffic.py` starts. To change the traffic, edit the `VEHICLES` and `LANES` tables in `traffic.py`; every name in `VEHICLES` must be included in the world file.
+
+The motorbike models (`models/motorbike_*`) are built from primitive shapes, because Gazebo Fuel has no motorcycle model. Regenerate them with `python3 models/make_motorbike.py`. The pretrained COCO YOLOv8 model often detects them as `person` (the rider) rather than `motorcycle`.
 
 ## Manual Installation
 ### Create a virtual environment
@@ -192,9 +208,13 @@ pip install ultralytics
 source /opt/ros/humble/setup.bash
 export GZ_SIM_RESOURCE_PATH=~/.gz/models
 ```
-- Copy the content of models from main repo to ~/.gz/models
-- Copy default.sdf from worlds folder in the main repo to ~/PX4-Autopilot/Tools/simulation/gz/worlds/
-- Set up the gimbal camera by running `setup_gimbal.py` against your PX4 model SDF (edit `MODEL_PATH` in the script to match your PX4 installation path)
+- Install the models, the world and the gimbal camera into PX4 and Gazebo:
+```commandline
+cd ~/PX4-ROS2-Gazebo-YOLOv8
+./setup_local.sh
+```
+The script copies `models/` to `~/.gz/models` and `worlds/default.sdf` to `~/PX4-Autopilot/Tools/simulation/gz/worlds/`, then adds the gimbal to the x500_depth model with `setup_gimbal.py` (the original model is backed up as `model.sdf.bak_nogimbal`). Run it again after changing `models/`, `worlds/` or `setup_gimbal.py`. If PX4 is not in `~/PX4-Autopilot`, use `PX4_DIR=/path/to/PX4-Autopilot ./setup_local.sh`.
+- `uav_camera_det.py` uses the fine-tuned weights `finetune/runs/yolov8m_sim/weights/best.pt`, which are not stored in git. Download them into that path, or train them with `python finetune/train.py`.
 
 ## Run
 ### Fly using Keyboard
@@ -206,7 +226,7 @@ MicroXRCEAgent udp4 -p 8888
 
 Terminal #2:
 cd ~/PX4-Autopilot
-PX4_SYS_AUTOSTART=4002 PX4_GZ_MODEL_POSE="268.08,-128.22,3.86,0.00,0,-0.7" PX4_GZ_MODEL=x500_depth ./build/px4_sitl_default/bin/px4
+PX4_SYS_AUTOSTART=4002 PX4_GZ_MODEL_POSE="273.61,-143.23,3.58,0.00,0,-0.7" PX4_GZ_MODEL=x500_depth ./build/px4_sitl_default/bin/px4
 
 Terminal #3:
 ros2 run ros_gz_bridge parameter_bridge /world/default/model/x500_depth_0/link/camera_link/sensor/IMX214/image@sensor_msgs/msg/Image[gz.msgs.Image --ros-args -r /world/default/model/x500_depth_0/link/camera_link/sensor/IMX214/image:=/camera
@@ -217,9 +237,8 @@ cd ~/PX4-ROS2-Gazebo-YOLOv8
 python uav_camera_det.py
 
 Terminal #5:
-source ~/px4-venv/bin/activate
 cd ~/PX4-ROS2-Gazebo-YOLOv8
-python move_car.py
+python3 traffic.py
 
 Terminal #6:
 source ~/px4-venv/bin/activate
@@ -237,7 +256,7 @@ MicroXRCEAgent udp4 -p 8888
 
 Terminal #2:
 cd ~/PX4-Autopilot
-PX4_SYS_AUTOSTART=4002 PX4_GZ_MODEL_POSE="283.08,-136.22,3.86,0.00,0,-0.7" PX4_GZ_MODEL=x500_depth ./build/px4_sitl_default/bin/px4
+PX4_SYS_AUTOSTART=4002 PX4_GZ_MODEL_POSE="273.61,-143.23,3.58,0.00,0,-0.7" PX4_GZ_MODEL=x500_depth ./build/px4_sitl_default/bin/px4
 
 Terminal #3:
 ros2 run ros_gz_bridge parameter_bridge /world/default/model/x500_depth_0/link/camera_link/sensor/IMX214/image@sensor_msgs/msg/Image[gz.msgs.Image --ros-args -r /world/default/model/x500_depth_0/link/camera_link/sensor/IMX214/image:=/camera
