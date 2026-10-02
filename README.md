@@ -1,58 +1,56 @@
 # px4-drone-traffic-yolov8
-Drone-based traffic monitoring in simulation: a PX4 drone with a gimbal camera flies over two-way traffic in Gazebo, and a YOLOv8 model fine-tuned on simulator images detects cars, buses, trucks, motorbikes and riders. Built with PX4 Autopilot, ROS 2 and Gazebo.
+Giám sát giao thông bằng drone trong môi trường mô phỏng: drone PX4 gắn camera gimbal bay trên một đoạn đường có xe chạy hai chiều trong Gazebo, và model YOLOv8 đã fine-tune trên ảnh mô phỏng nhận diện ô tô, xe buýt, xe tải, xe máy và người lái. Dự án dùng PX4 Autopilot, ROS 2 và Gazebo.
 
-Based on [monemati/PX4-ROS2-Gazebo-YOLOv8](https://github.com/monemati/PX4-ROS2-Gazebo-YOLOv8).
+Phát triển từ [monemati/PX4-ROS2-Gazebo-YOLOv8](https://github.com/monemati/PX4-ROS2-Gazebo-YOLOv8).
 
-## Features
-- Keyboard-controlled drone flight (WASD + arrow keys) via MAVSDK
-- 2-axis gimbal camera control (pitch and yaw) adjustable during flight
-- YOLOv8 real-time object detection with resizable display window, using a YOLOv8m fine-tuned on simulator images
-- Two-way traffic (cars, SUVs, pickups, a bus and motorbikes) on the raceway straight for traffic-monitoring demos
-- All services orchestrated via tmuxinator in a single tiled-pane window
-- Docker-based setup with GPU passthrough and X11 forwarding
+## Tính năng
+- Điều khiển drone bằng bàn phím (WASD + phím mũi tên) qua MAVSDK
+- Camera gắn gimbal 2 trục (pitch và yaw), chỉnh được trong khi bay
+- Nhận diện vật thể thời gian thực bằng YOLOv8m đã fine-tune trên ảnh mô phỏng, cửa sổ hiển thị thay đổi được kích thước
+- Giao thông hai chiều (ô tô, SUV, bán tải, xe buýt và xe máy) trên đoạn đường thẳng của trường đua
+- Tất cả dịch vụ chạy trong một cửa sổ tmux chia ô bằng tmuxinator
+- Chạy bằng Docker, hỗ trợ GPU và hiển thị qua X11
 
 ## Demo
-Demo of the original project:
+<!-- Video demo sẽ được thêm sau -->
 
-https://github.com/monemati/PX4-ROS2-Gazebo-YOLOv8/assets/58460889/fab19f49-0be6-43ea-a4e4-8e9bc8d59af9
+## Model đã fine-tune
+YOLOv8m huấn luyện sẵn trên COCO nhận diện xe máy trong mô phỏng rất kém, nên model được fine-tune trên ảnh chụp từ chính môi trường mô phỏng (thư mục `finetune/`). Kết quả trên tập test (300 ảnh):
 
-## Fine-tuned Model
-The pretrained COCO YOLOv8m detects the simulated motorbikes poorly, so it was fine-tuned on images captured from the simulator (`finetune/`). Results on the test set (300 images):
-
-| Model | mAP50 | mAP50-95 | Motorcycle recall |
-|-------|-------|----------|-------------------|
+| Model | mAP50 | mAP50-95 | Recall xe máy |
+|-------|-------|----------|---------------|
 | `yolov8m.pt` (COCO) | 0.402 | 0.323 | 0.243 |
-| Fine-tuned `best.pt` | 0.971 | 0.826 | 0.963 |
+| `best.pt` đã fine-tune | 0.971 | 0.826 | 0.963 |
 
-The weights are published in the [v1.0 release](https://github.com/NGUYEN-UY-THUAT/px4-drone-traffic-yolov8/releases/tag/v1.0) and downloaded automatically by `setup_local.sh` and the Dockerfile. To download them yourself:
+File trọng số được đăng ở [bản phát hành v1.0](https://github.com/NGUYEN-UY-THUAT/px4-drone-traffic-yolov8/releases/tag/v1.0), và được `setup_local.sh` cũng như Dockerfile tự động tải về. Để tự tải:
 ```commandline
 mkdir -p finetune/runs/yolov8m_sim/weights
 curl -L -o finetune/runs/yolov8m_sim/weights/best.pt https://github.com/NGUYEN-UY-THUAT/px4-drone-traffic-yolov8/releases/download/v1.0/best.pt
 ```
 
 ## Docker
-- Build the image with the provided Dockerfile. The prebuilt image on Docker Hub is from the original project and does not include the traffic simulation or the fine-tuned model.
+- Build image từ Dockerfile có sẵn. Image dựng sẵn trên Docker Hub là của dự án gốc, không có phần mô phỏng giao thông và model đã fine-tune.
 
-### Prerequisites
-Allow Docker to access the X11 display:
+### Chuẩn bị
+Cho phép Docker truy cập màn hình X11:
 ```commandline
 xhost +local:docker
 ```
 
-### Pull The Original Image
+### Tải image của dự án gốc
 ```commandline
-# Prebuilt image of the original project (without this repo's changes)
+# Image dựng sẵn của dự án gốc (không có các thay đổi của repo này)
 docker pull monemati/px4_ros2_gz_yolov8_image
 ```
 
-### Build Custom Image
+### Build image
 ```commandline
 git clone https://github.com/NGUYEN-UY-THUAT/px4-drone-traffic-yolov8.git PX4-ROS2-Gazebo-YOLOv8
 cd PX4-ROS2-Gazebo-YOLOv8
 docker build -t px4_ros2_gz_yolov8_image .
 ```
 
-### Run The Docker
+### Chạy Docker
 ```commandline
 XAUTH=/tmp/.docker.xauth
 touch $XAUTH
@@ -71,90 +69,90 @@ docker run --privileged -it --gpus all \
   px4_ros2_gz_yolov8_image
 ```
 
-### What Launches in Docker
-The container starts a single tmux window with 6 tiled panes:
+### Những gì chạy trong Docker
+Container mở một cửa sổ tmux chia thành 6 ô:
 
-| Pane | Service |
-|------|---------|
+| Ô | Dịch vụ |
+|---|---------|
 | 1 | Micro XRCE-DDS Agent |
-| 2 | PX4 SITL (x500_depth drone) |
-| 3 | ROS-Gazebo camera bridge |
-| 4 | YOLOv8 detection display |
-| 5 | Traffic simulation (`traffic.py`) |
-| 6 | Keyboard drone controller |
+| 2 | PX4 SITL (drone x500_depth) |
+| 3 | Cầu nối camera ROS-Gazebo |
+| 4 | Hiển thị nhận diện YOLOv8 |
+| 5 | Mô phỏng giao thông (`traffic.py`) |
+| 6 | Điều khiển drone bằng bàn phím |
 
-Switch between panes with `Ctrl+b` then arrow keys.
+Chuyển giữa các ô bằng `Ctrl+b` rồi phím mũi tên.
 
-## Keyboard Controls
+## Điều khiển bằng bàn phím
 
-All keyboard input is handled directly in the terminal (no separate window needed).
+Phím được đọc trực tiếp trong terminal, không cần cửa sổ riêng.
 
-### Flight Controls
-| Key | Action |
-|-----|--------|
-| `r` | Arm the drone |
-| `l` | Land |
-| `h` | Hold mode: lock position and altitude, ignore the keyboard. Any movement key switches back to position mode |
-| `p` | Position mode (default after arming): release all keys to hold position and altitude |
-| `o` | Altitude mode: release all keys to hold altitude; the drone may drift horizontally |
-| `w` / `s` | Throttle up / down |
-| `a` / `d` | Yaw left / right |
-| Arrow keys | Roll / Pitch |
-| `i` | Print flight mode |
-| `Ctrl+C` | Quit |
+### Điều khiển bay
+| Phím | Chức năng |
+|------|-----------|
+| `r` | Arm drone |
+| `l` | Hạ cánh |
+| `h` | Chế độ Hold: giữ nguyên vị trí và độ cao, bỏ qua bàn phím. Nhấn phím di chuyển bất kỳ để quay lại chế độ Position |
+| `p` | Chế độ Position (mặc định sau khi arm): thả hết phím thì drone giữ nguyên vị trí và độ cao |
+| `o` | Chế độ Altitude: thả hết phím thì drone giữ độ cao, nhưng có thể trôi ngang |
+| `w` / `s` | Tăng / giảm ga |
+| `a` / `d` | Xoay trái / phải |
+| Phím mũi tên | Roll / Pitch (di chuyển ngang, tiến lùi) |
+| `i` | In chế độ bay hiện tại |
+| `Ctrl+C` | Thoát |
 
-### Gimbal Camera Controls
-| Key | Action |
-|-----|--------|
-| `j` / `k` | Gimbal pitch down / up |
-| `n` / `m` | Gimbal yaw left / right |
+### Điều khiển camera gimbal
+| Phím | Chức năng |
+|------|-----------|
+| `j` / `k` | Nghiêng camera xuống / lên |
+| `n` / `m` | Xoay camera sang trái / phải |
 
-The camera starts at 45 degrees downward. It can tilt from 30 degrees up to straight down (90 degrees), and turn up to 90 degrees left or right.
+Camera khởi đầu ở góc nghiêng xuống 45 độ. Camera nghiêng được từ 30 độ hướng lên đến nhìn thẳng xuống (90 độ), và xoay tối đa 90 độ sang mỗi bên.
 
-## Gimbal Camera System
+## Hệ thống camera gimbal
 
-The drone's camera is mounted on a 2-axis gimbal with pitch and yaw control. During Docker build, `setup_gimbal.py` modifies the x500_depth drone model SDF to replace the fixed camera joint with:
+Camera của drone được gắn trên gimbal 2 trục pitch và yaw. Script `setup_gimbal.py` sửa file SDF của model drone x500_depth, thay khớp camera cố định bằng:
 
-- **gimbal_yaw_joint**: Revolute joint around the Z axis (base_link to gimbal_link)
-- **gimbal_pitch_joint**: Revolute joint around the Y axis (gimbal_link to camera_link)
+- **gimbal_yaw_joint**: khớp xoay quanh trục Z (base_link nối với gimbal_link)
+- **gimbal_pitch_joint**: khớp xoay quanh trục Y (gimbal_link nối với camera_link)
 
-Each joint is controlled by a `JointPositionController` plugin with velocity commands (up to 1.5 rad/s, no torque tuning and no reaction torques on the drone), responding to Gazebo transport topics:
-- `/gimbal/cmd_pitch` — pitch angle command
-- `/gimbal/cmd_yaw` — yaw angle command
+Mỗi khớp được điều khiển bằng plugin `JointPositionController` ở chế độ lệnh vận tốc (tối đa 1.5 rad/s, không cần chỉnh lực và không tạo phản lực lên drone), nhận lệnh qua các topic Gazebo:
+- `/gimbal/cmd_pitch`: góc pitch
+- `/gimbal/cmd_yaw`: góc yaw
 
-## Traffic Simulation
+## Mô phỏng giao thông
 
-`traffic.py` drives 16 vehicles along the main straight of the Sonoma raceway, next to the drone's spawn point:
+`traffic.py` điều khiển 16 phương tiện chạy trên đoạn đường thẳng chính của trường đua Sonoma, cạnh vị trí xuất phát của drone:
 
-| Lane | Direction | Vehicles |
-|------|-----------|----------|
-| Motorbike lane | south-east | 4 motorbikes |
-| Car lane | south-east | hatchback, SUV, pickup, bus |
-| Car lane | north-west | 2 hatchbacks, SUV, pickup |
-| Motorbike lane | north-west | 4 motorbikes |
+| Làn | Hướng | Phương tiện |
+|-----|-------|-------------|
+| Làn xe máy | đông nam | 4 xe máy |
+| Làn ô tô | đông nam | hatchback, SUV, bán tải, xe buýt |
+| Làn ô tô | tây bắc | 2 hatchback, SUV, bán tải |
+| Làn xe máy | tây bắc | 4 xe máy |
 
-Each vehicle keeps a gap to the one ahead in its lane, and when it reaches the end of the road it re-enters at the start with a slightly different speed. All poses are sent in a single `/world/default/set_pose_vector` request per tick. The script uses the gz-transport Python bindings when they are importable (e.g. system `python3` with Gazebo Harmonic), and falls back to the slower `gz service` CLI otherwise.
+Mỗi xe giữ khoảng cách với xe phía trước trong cùng làn. Khi tới cuối đường, xe quay lại đầu đường với tốc độ hơi khác đi. Vị trí của tất cả các xe được gửi trong một lệnh `/world/default/set_pose_vector` ở mỗi chu kỳ. Script dùng thư viện Python gz-transport nếu import được (ví dụ `python3` của hệ thống với Gazebo Harmonic), nếu không sẽ dùng lệnh `gz service`, chậm hơn.
 
-The vehicles are parked in the pit lane in `worlds/default.sdf` until `traffic.py` starts. To change the traffic, edit the `VEHICLES` and `LANES` tables in `traffic.py`; every name in `VEHICLES` must be included in the world file.
+Các xe đỗ ở khu pit lane trong `worlds/default.sdf` cho tới khi `traffic.py` chạy. Muốn thay đổi giao thông thì sửa bảng `VEHICLES` và `LANES` trong `traffic.py`; mọi tên trong `VEHICLES` phải có trong file world.
 
-The motorbike models (`models/motorbike_*`) are built from primitive shapes, because Gazebo Fuel has no motorcycle model. Regenerate them with `python3 models/make_motorbike.py`. The pretrained COCO YOLOv8 model often detects them as `person` (the rider) rather than `motorcycle`.
+Các model xe máy (`models/motorbike_*`) được dựng từ các khối hình học cơ bản, vì Gazebo Fuel không có model xe máy. Tạo lại chúng bằng `python3 models/make_motorbike.py`. Model YOLOv8 COCO gốc thường nhận chúng thành `person` (người lái) thay vì `motorcycle`; đây là lý do model được fine-tune.
 
-## Manual Installation
-### Create a virtual environment
+## Cài đặt thủ công
+### Tạo môi trường ảo
 ```commandline
-# create
+# tạo
 python -m venv ~/px4-venv
 
-# activate
+# kích hoạt
 source ~/px4-venv/bin/activate
 ```
 ### Clone repository
-Clone into `~/PX4-ROS2-Gazebo-YOLOv8`; the commands below use that path.
+Clone vào `~/PX4-ROS2-Gazebo-YOLOv8`; các lệnh bên dưới dùng đường dẫn này.
 ```commandline
 cd ~
 git clone https://github.com/NGUYEN-UY-THUAT/px4-drone-traffic-yolov8.git PX4-ROS2-Gazebo-YOLOv8
 ```
-### Install PX4
+### Cài PX4
 ```commandline
 cd ~
 git clone https://github.com/PX4/PX4-Autopilot.git --recursive
@@ -162,7 +160,7 @@ bash ./PX4-Autopilot/Tools/setup/ubuntu.sh
 cd PX4-Autopilot/
 make px4_sitl
 ```
-### Install ROS 2
+### Cài ROS 2
 ```commandline
 cd ~
 sudo apt update && sudo apt install locales
@@ -180,7 +178,7 @@ sudo apt install ros-dev-tools
 source /opt/ros/humble/setup.bash && echo "source /opt/ros/humble/setup.bash" >> .bashrc
 pip install --user -U empy pyros-genmsg setuptools
 ```
-### Setup Micro XRCE-DDS Agent & Client
+### Cài Micro XRCE-DDS Agent & Client
 ```commandline
 cd ~
 git clone https://github.com/eProsima/Micro-XRCE-DDS-Agent.git
@@ -192,7 +190,7 @@ make
 sudo make install
 sudo ldconfig /usr/local/lib/
 ```
-### Build ROS 2 Workspace
+### Build ROS 2 workspace
 ```commandline
 mkdir -p ~/ws_sensor_combined/src/
 cd ~/ws_sensor_combined/src/
@@ -210,7 +208,7 @@ cd ..
 source /opt/ros/humble/setup.bash
 colcon build
 ```
-### Install MAVSDK
+### Cài MAVSDK
 ```commandline
 pip install mavsdk
 pip install aioconsole
@@ -218,27 +216,27 @@ sudo apt install ros-humble-ros-gzgarden
 pip install numpy
 pip install opencv-python
 ```
-### Install YOLO
+### Cài YOLO
 ```commandline
 pip install ultralytics
 ```
-### Additional Configs
-- Put below lines in your bashrc:
+### Cấu hình thêm
+- Thêm các dòng sau vào `~/.bashrc`:
 ```commandline
 source /opt/ros/humble/setup.bash
 export GZ_SIM_RESOURCE_PATH=~/.gz/models
 ```
-- Install the models, the world and the gimbal camera into PX4 and Gazebo:
+- Cài các model, world và camera gimbal vào PX4 và Gazebo:
 ```commandline
 cd ~/PX4-ROS2-Gazebo-YOLOv8
 ./setup_local.sh
 ```
-The script copies `models/` to `~/.gz/models` and `worlds/default.sdf` to `~/PX4-Autopilot/Tools/simulation/gz/worlds/`, then adds the gimbal to the x500_depth model with `setup_gimbal.py` (the original model is backed up as `model.sdf.bak_nogimbal`). Run it again after changing `models/`, `worlds/` or `setup_gimbal.py`. If PX4 is not in `~/PX4-Autopilot`, use `PX4_DIR=/path/to/PX4-Autopilot ./setup_local.sh`.
-- `uav_camera_det.py` uses the fine-tuned weights `finetune/runs/yolov8m_sim/weights/best.pt`, which are not stored in git. `setup_local.sh` downloads them from the release (see [Fine-tuned Model](#fine-tuned-model)), or you can train them with `python finetune/train.py`.
+Script copy `models/` vào `~/.gz/models` và `worlds/default.sdf` vào `~/PX4-Autopilot/Tools/simulation/gz/worlds/`, rồi gắn gimbal vào model x500_depth bằng `setup_gimbal.py` (model gốc được sao lưu thành `model.sdf.bak_nogimbal`). Chạy lại script sau mỗi lần sửa `models/`, `worlds/` hoặc `setup_gimbal.py`. Nếu PX4 không nằm ở `~/PX4-Autopilot`, dùng `PX4_DIR=/duong/dan/toi/PX4-Autopilot ./setup_local.sh`.
+- `uav_camera_det.py` dùng trọng số đã fine-tune `finetune/runs/yolov8m_sim/weights/best.pt`, file này không lưu trong git. `setup_local.sh` tự tải nó từ bản phát hành (xem mục Model đã fine-tune ở trên), hoặc bạn có thể tự huấn luyện bằng `python finetune/train.py`.
 
-## Run
-### Fly using Keyboard
-You need several terminals.
+## Chạy
+### Bay bằng bàn phím
+Cần mở nhiều terminal.
 ```commandline
 Terminal #1:
 cd ~/Micro-XRCE-DDS-Agent
@@ -265,10 +263,10 @@ source ~/px4-venv/bin/activate
 cd ~/PX4-ROS2-Gazebo-YOLOv8
 python keyboard-mavsdk-test.py
 ```
-Focus on the keyboard controller terminal, then press `r` to arm the drone. Use WASD and arrow keys for flight, `j`/`k`/`n`/`m` for gimbal control, and `l` for landing.
+Chọn vào terminal điều khiển bàn phím, nhấn `r` để arm drone. Dùng WASD và phím mũi tên để bay, `j`/`k`/`n`/`m` để điều khiển gimbal, và `l` để hạ cánh.
 
-### Fly using ROS 2
-You need several terminals.
+### Bay bằng ROS 2
+Cần mở nhiều terminal.
 ```commandline
 Terminal #1:
 cd ~/Micro-XRCE-DDS-Agent
@@ -293,8 +291,8 @@ source install/local_setup.bash
 ros2 run px4_ros_com offboard_control
 ```
 
-## Acknowledgement
-- https://github.com/monemati/PX4-ROS2-Gazebo-YOLOv8 (original project)
+## Ghi nhận
+- https://github.com/monemati/PX4-ROS2-Gazebo-YOLOv8 (dự án gốc)
 - https://github.com/PX4/PX4-Autopilot
 - https://github.com/ultralytics/ultralytics
 - https://www.ros.org/
